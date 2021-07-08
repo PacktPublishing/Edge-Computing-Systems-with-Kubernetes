@@ -1,0 +1,1 @@
+/Users/sergiomendez/Documents/cloudsociety/development/book/k3s-on-edge/ch1/rust/hello-rust/target/debug/hello-rust: /Users/sergiomendez/Documents/cloudsociety/development/book/k3s-on-edge/ch1/rust/hello-rust/src/main.rs
