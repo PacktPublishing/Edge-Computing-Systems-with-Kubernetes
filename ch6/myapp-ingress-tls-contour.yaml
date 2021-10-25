@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress-tls-contour
+  annotations:
+    kubernetes.io/ingress.class: "contour"
+    cert-manager.io/cluster-issuer: self-signed-issuer
+spec:
+  tls:
+  - hosts:
+      - myapp-test-contour.test
+    secretName: myapp-tls-contour
+  rules:
+  - host: myapp-test-contour.test
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp
+            port:
+              number: 80

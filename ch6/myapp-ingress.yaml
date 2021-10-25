@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress-nginx
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: self-signed-issuer
+spec:
+  tls:
+  - hosts:
+      - 192.168.0.241.nip.io
+    secretName: myapp-tls-nginx
+  rules:
+  - host: 192.168.0.241.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp
+            port:
+              number: 80

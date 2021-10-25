@@ -1,0 +1,31 @@
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: httpbinproxy
+spec:
+  virtualhost:
+    fqdn: myapp-test-contour.test
+    tls:
+      secretName: httpbinproxy
+    rateLimitPolicy:
+      local:
+        requests: 3
+        unit: minute
+        burst: 1
+  routes:
+  - services:
+    - name: myapp
+      port: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: httpbinproxy
+spec:
+  commonName: myapp-test-contour.test
+  dnsNames:
+  - myapp-test-contour.test
+  issuerRef:
+    name: self-signed-issuer
+    kind: ClusterIssuer
+  secretName: httpbinproxy

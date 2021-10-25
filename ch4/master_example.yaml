@@ -1,0 +1,22 @@
+hostname: master
+ssh_authorized_keys:
+- ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCfEU1qj+Q+jm8rqiqFP/T060D2/He7/anvD/kNdBr9voBLFvh7gjNAj476mZvFl1OVxBH9qtxHKJ0UZmF2EgD0kIn7+9iAVvEEqBFHv67/5PGHYIglPIeWLECAoawm8u8ZWr8ZDyzGDYQMEUrCqzLas392QNt07+yrmHtOrF/E4Tsh0wONk+R5leunXeZPx/dtonswxfBnN1Tw8KuvKanZonvOZrrjMPFGXXHgHsFDFBdqi+6GwRiHJKx78g/FVzSPtvXNVo84LAprTMlDVKNxdfbOTFFH4gjUXM4xKBP5/Ae3q9zyapfrmxaUDeWyFR3awHQjhWAkl1TBaoulg4TU1xHSVG+wFJgqB06YhoC7lrqfORX3fb4r2UvchjMEaiOyWRO3kRuJC/xIb9PwCU8xbBeKlLeKiaHTodNFHxsSHhNem1QxNjQ8cF9gfAEnTlytrXS+Pm1rfP+hEe2jxSJWFdIwzbYNI/xdR6q7GHwhZPHrn4/RznDEntYffaLdvvU= sergiomendez@YALO-199.local
+write_files:
+  - path: /var/lib/connman/default.config
+    content: |-
+      [service_eth0]
+      Type=ethernet
+      IPv4=192.168.0.11/255.255.255.0/192.168.0.1
+      IPv6=off
+      Nameservers=8.8.8.8
+k3os:
+  dns_nameservers:
+  - 8.8.8.8
+  ntp_servers:
+  - 0.us.pool.ntp.org
+  password: rancher
+  token: myclustersecret
+  k3s_args:
+  - server
+  - "--write-kubeconfig-mode"
+  - "644"
