@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: service1
+  name: service1
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service1
+  template:
+    metadata:
+      labels:
+        app: service1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "5555"
+    spec:
+      containers:
+      - image: sergioarmgpl/exporter
+        name: exporter
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_AUTH
+          value: "YOUR_PASSWORD"
+        - name: SENSOR_TOPIC
+          value: "sensor1"

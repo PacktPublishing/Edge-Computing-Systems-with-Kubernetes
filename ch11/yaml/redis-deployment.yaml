@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: redis
+  name: redis
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: redis
+  template:
+    metadata:
+      labels:
+        run: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:6.2
+        command:
+          - redis-server
+          - /redisconf/redis.conf
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "128Mi"
+        volumeMounts:
+        - mountPath: "/data"
+          name: redis-storage
+        - mountPath: /redisconf
+          name: config
+      volumes:
+        - name: config
+          configMap:
+            name: redis-configmap
+            items:
+            - key: redis-config
+              path: redis.conf
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: db-pv-claim

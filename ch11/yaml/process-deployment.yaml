@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: process
+  name: process
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: process
+  template:
+    metadata:
+      labels:
+        app: process
+    spec:
+      containers:
+      - image: sergioarmgpl/mqttsubs
+        imagePullPolicy: Always
+        name: mqttsubs
+        env:
+        - name: MOSQUITTO_HOST
+          value: "mosquitto"
+        - name: REDIS_HOST
+          value: "192.168.0.242"
+        - name: REDIS_AUTH
+          valueFrom:
+             secretKeyRef:
+                name: db-password
+                key: password
+        - name: SENSOR_TOPIC
+          value: "sensor1"
