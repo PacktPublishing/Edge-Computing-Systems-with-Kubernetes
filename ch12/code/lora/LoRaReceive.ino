@@ -19,7 +19,7 @@ void WIFISetUp(void)
   delay(100);
   WiFi.mode(WIFI_STA);
   WiFi.setAutoConnect(true);
-  WiFi.begin("TIGO-DBFB","4D9667308433");
+  WiFi.begin("NET_NAME","PASSWORD");
   delay(100);
 
   byte count = 0;
