@@ -1,0 +1,31 @@
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gps-reader-2
+spec:
+  nodeName: agent2 
+  containers:
+  - image: sergioarmgpl/gps_reader
+    name: gpsreader
+    imagePullPolicy: Always
+    env:
+    - name: DEVICE
+      value: "/dev/ttyACM0"
+    - name: CLIENT_ID
+      value: "2"
+    - name: ENDPOINT
+      value: "http://34.67.131.120:3000"
+    securityContext:
+      privileged: true
+      capabilities:
+        add: ["SYS_ADMIN"]
+    volumeMounts:
+    - mountPath: /dev
+      name: dev-volume
+  volumes:
+  - name: dev-volume
+    hostPath:
+      path: /dev
+      type: Directory
+EOF

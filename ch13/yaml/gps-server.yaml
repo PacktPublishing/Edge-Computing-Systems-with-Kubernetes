@@ -1,0 +1,52 @@
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: gps-server
+  name: gps-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gps-server
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: gps-server
+    spec:
+      containers:
+      - image: sergioarmgpl/gps_server
+        name: gps-server
+        imagePullPolicy: Always
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_AUTH
+          value: "YOUR_PASSWORD"
+        - name: ENDPOINT
+          value: "http://tracking-server:3000"          
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: gps-server
+  name: gps-server-lb
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: gps-server
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+EOF

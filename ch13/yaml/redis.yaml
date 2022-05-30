@@ -1,0 +1,86 @@
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-pv-claim-1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  #storageClassName: longhorn
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-configmap
+data:
+  redis-config: |
+    dir /data
+    requirepass YOUR_PASSWORD
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: redis
+    spec: 
+      containers: 
+      - name: redis
+        #image: arm64v8/redis:6.2  
+        image: redis:6.2 
+        command: 
+          - redis-server 
+          - /redisconf/redis.conf 
+        ports: 
+        - containerPort: 6379 
+        resources: 
+          limits: 
+            cpu: "0.2"
+            memory: "128Mi" 
+        volumeMounts: 
+        - mountPath: "/data" 
+          name: redis-storage 
+        - mountPath: /redisconf 
+          name: config
+      volumes:
+        - name: config 
+          configMap: 
+            name: redis-configmap 
+            items: 
+            - key: redis-config 
+              path: redis.conf 
+        - name: redis-storage
+          persistentVolumeClaim: 
+            claimName: db-pv-claim-1
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
+  type: ClusterIP
+EOF 

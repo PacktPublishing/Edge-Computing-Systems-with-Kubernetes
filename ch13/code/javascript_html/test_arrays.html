@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtime location tracker</title>
+
+    <!-- leaflet css  -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /*body {
+            margin: 0;
+            padding: 0;
+        }
+        #map { 
+            margin: auto;
+            height: 60vh;
+            width: 60%; 
+        }*/
+
+		/*html, body {
+			height: 100%;
+			margin: 0;
+		}
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}*/
+
+        #map {
+            width: 50%;
+            height: 50vh;
+        }
+    </style>
+</head>
+
+<body>
+    <center><h1>Geo Tracking</h1>
+    <div id="map"></div>
+    </center>
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- leaflet js  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Map initialization 
+var map = L.map('map').setView([14.6307175, -90.6061595], 13);
+
+//osm layer
+var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox/streets-v11'/*,
+    tileSize: 512,
+    zoomOffset: -1*/
+}).addTo(map);
+//osm.addTo(map);
+setInterval(() => {
+    $.getJSON("http://34.67.131.120:3000/clients/positions/unit/km/r/0.1", function(pos) {
+        console.log(pos)
+        markers.forEach(function myFunction(item) {
+            item.remove();
+        });
+        markers.splice(0)
+        data = pos.clients
+        data.forEach(function myFunction(item) {
+            markPosition(item.cid,item.lat,item.lng,item.near)
+        });
+    });
+}, 5000);
+
+var marker;
+var markers = []
+
+function markPosition(cid,lat,lng,near)
+{
+    let near_txt = ""
+    data = near
+    data.forEach(function myFunction(near_destiny) {
+        near_txt += near_destiny + "<br>"
+    });
+    near_txt = near_txt.slice(0, -4)
+    marker = L.marker([lat, lng])
+    marker.addTo(map)
+    .bindPopup('<b>CID:</b> '+cid
+            +'<br><b>Latitude: </b>'+lat
+            +'<br><b>Longitude: </b>'+lng
+            +'<br><b>NearTo: </b><br>'+near_txt)
+    markers.push(marker)
+}
+
+
+</script>

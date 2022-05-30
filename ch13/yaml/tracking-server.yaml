@@ -1,0 +1,68 @@
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tracking-server
+  name: tracking-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracking-server
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: tracking-server
+    spec:
+      containers:
+      - image: sergioarmgpl/tracking_server
+        name: tracking-server
+        imagePullPolicy: Always
+        env:
+        - name: MONGO_URI
+          value: "mongodb://admin:YOUR_PASSWORD@mongo/mydatabase?authSource=admin"
+        - name: MONGO_DB
+          value: "mydatabase"
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tracking-server
+  name: tracking-server
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: tracking-server
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tracking-server
+  name: tracking-server-lb
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: tracking-server
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+EOF
