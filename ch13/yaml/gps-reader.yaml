@@ -1,10 +1,8 @@
-cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: gps-reader-2
+  name: gps-reader
 spec:
-  nodeName: agent2 
   containers:
   - image: sergioarmgpl/gps_reader
     name: gpsreader
@@ -12,10 +10,10 @@ spec:
     env:
     - name: DEVICE
       value: "/dev/ttyACM0"
-    - name: CLIENT_ID
-      value: "2"
+    - name: CLIENT_I
+      value: "1"
     - name: ENDPOINT
-      value: "http://34.67.131.120:3000"
+      value: "http://<GPS_SERVER_IP>:3000"
     securityContext:
       privileged: true
       capabilities:
@@ -28,4 +26,3 @@ spec:
     hostPath:
       path: /dev
       type: Directory
-EOF

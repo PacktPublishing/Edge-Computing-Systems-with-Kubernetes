@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: frontend
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: sergioarmgpl/frontend
+        name: tracking-server
+        imagePullPolicy: Always
+        env:
+        - name: LATITUDE
+          value: "<YOUR_LATITUDE_COORDINATE>"
+        - name: LONGITUDE
+          value: "<YOUR_LONGITUDE_COORDINATE>"
+        - name: GPS_SERVER
+          value: "<YOUR_GPS_SERVER_IP>"
+        - name: TRACKING_SERVER
+          value: "<YOUR_TRACKING_SERVER_IP>" 
+        resources: {}
+status: {} 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: frontend
+  name: frontend-lb
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: frontend
+  type: LoadBalancer
+status:
+  loadBalancer: {}
