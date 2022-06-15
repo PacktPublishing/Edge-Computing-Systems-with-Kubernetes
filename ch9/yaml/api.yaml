@@ -1,0 +1,23 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  labels:
+    networking.knative.dev/visibility: cluster-local
+  name: api
+  namespace: default
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/max-scale: "5"
+        containerConcurrency: 2
+      name: api-v1
+    spec:
+      containers:
+      - env:
+        - name: MESSAGE
+          value: "Knative demo v1"
+        image: sergioarmgpl/app2demo
+        name: ""
+        ports:
+        - containerPort: 5000

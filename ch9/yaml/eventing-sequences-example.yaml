@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sequence-demo
+  labels:
+       eventing.knative.dev/injection: enabled
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: step1
+  namespace: sequence-demo
+spec:
+  template:
+    spec:
+      containers:
+        - image: sergioarmgpl/app4demo
+          ports:
+           - containerPort: 5000
+          env:
+            - name: MESSAGE
+              value: "step1"
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: step2
+  namespace: sequence-demo
+spec:
+  template:
+    spec:
+      containers:
+        - image: sergioarmgpl/app4demo
+          ports:
+           - containerPort: 5000
+          env:
+            - name: MESSAGE
+              value: "step2"
+---
+apiVersion: flows.knative.dev/v1
+kind: Sequence
+metadata:
+  name: sequence
+  namespace: sequence-demo
+spec:
+  channelTemplate:
+    apiVersion: messaging.knative.dev/v1
+    kind: InMemoryChannel
+  steps:
+    - ref:
+        apiVersion: serving.knative.dev/v1
+        kind: Service
+        name: step1
+    - ref:
+        apiVersion: serving.knative.dev/v1
+        kind: Service
+        name: step2
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: sequence-trigger
+  namespace: sequence-demo
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: event.call.sequence
+  subscriber:
+    ref:
+      apiVersion: flows.knative.dev/v1
+      kind: Sequence
+      name: sequence

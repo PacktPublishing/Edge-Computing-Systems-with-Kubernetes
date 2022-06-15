@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api-demo2
+  name: api-demo2
+  namespace: event-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-demo2
+  template:
+    metadata:
+      labels:
+        app: api-demo2
+    spec:
+      containers:
+      - image: sergioarmgpl/app3demo
+        name: app4
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: api-demo2
+  name: api-demo2
+  namespace: event-demo
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: api-demo2
+  type: ClusterIP
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: api-demo2
+  namespace: event-demo
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: event.show.2
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: api-demo2
