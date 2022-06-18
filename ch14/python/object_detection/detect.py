@@ -82,6 +82,12 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # Run object detection estimation using the model.
     detection_result = detector.detect(input_tensor)
 
+    print(str(detection_result))
+    print(str(len(detection_result.detections)))
+    print(type(detection_result))
+    for detected_obj in detection_result.detections:
+      print("Detected: "+str(detected_obj.classes[0].class_name))
+
     # Draw keypoints and edges on input image
     image = utils.visualize(image, detection_result)
 
@@ -94,6 +100,11 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # Show the FPS
     fps_text = 'FPS = {:.1f}'.format(fps)
     text_location = (left_margin, row_size)
+    cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+                font_size, text_color, font_thickness)
+
+    fps_text = 'Hello my friend'
+    text_location = (left_margin, row_size*2)
     cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
                 font_size, text_color, font_thickness)
 
