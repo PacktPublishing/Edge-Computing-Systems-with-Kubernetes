@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: neo4j
+  name: neo4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neo4j
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      containers:
+      - image: arm64v8/neo4j
+        name: neo4j
+        env:
+        - name: NEO4J_AUTH
+          value: none
+        ports:
+            - containerPort: 7474
+              name: http
+            - containerPort: 7687
+              name: bolt
+            - containerPort: 7473
+              name: https
+        volumeMounts:
+            - name: neo4j-data
+              mountPath: "/var/lib/neo4j/data"
+      volumes:
+          - name: neo4j-data
+            persistentVolumeClaim:
+              claimName: db-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: neo4j
+  name: neo4j
+spec: 
+  ports:
+  - name: https
+    port: 7473
+    protocol: TCP
+    targetPort: 7473
+  - name: http
+    port: 7474
+    protocol: TCP
+    targetPort: 7474
+  - name: bolt
+    port: 7687
+    protocol: TCP
+    targetPort: 7687
+  selector:
+    app: neo4j
+  type: ClusterIP
