@@ -15,12 +15,24 @@
 import argparse
 import sys
 import time
+from collections import Counter
 
 import cv2
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 import utils
+
+
+def getGPSCoordinate()
+    rhost = os.environ['REDIS_HOST']
+    rauth = os.environ['REDIS_AUTH']
+    r = redis.StrictRedis(host=rhost,\
+      port=6379,db=0,password=rauth,\
+      decode_responses=True)
+    r = r.lpop("gps-queue")
+    pos = r.split("|")
+    return {"lat":float(pos[0]),"lng":float(pos[1])}
 
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
@@ -57,12 +69,13 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   base_options = core.BaseOptions(
       file_name=model, use_coral=enable_edgetpu, num_threads=num_threads)
   detection_options = processor.DetectionOptions(
-      max_results=3, score_threshold=0.3)
+      max_results=8, score_threshold=0.3)
   options = vision.ObjectDetectorOptions(
       base_options=base_options, detection_options=detection_options)
   detector = vision.ObjectDetector.create_from_options(options)
 
   # Continuously capture images from the camera and run inference
+  items = []
   while cap.isOpened():
     success, image = cap.read()
     if not success:
@@ -85,9 +98,17 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     print(str(detection_result))
     print(str(len(detection_result.detections)))
     print(type(detection_result))
+
+
+    items.clear()
+
+
     for detected_obj in detection_result.detections:
       print("Detected: "+str(detected_obj.classes[0].class_name))
+      items.append(str(detected_obj.classes[0].class_name))
+    
 
+    print("items",items)
     # Draw keypoints and edges on input image
     image = utils.visualize(image, detection_result)
 
@@ -103,10 +124,48 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
                 font_size, text_color, font_thickness)
 
-    fps_text = 'Hello my friend'
-    text_location = (left_margin, row_size*2)
-    cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-                font_size, text_color, font_thickness)
+#    fps_text = 'Hello my friend'
+#    text_location = (left_margin, row_size*2)
+#    cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+#                font_size, text_color, font_thickness)
+
+    r = 2
+    counts = Counter(items)
+    print("counts",counts)
+    i = 0
+    warning = False
+    object_name = ""
+    for c in counts:
+#        print(c,counts[c])
+        fps_text = c + " = " + str(counts[c])
+        print("fps_text",fps_text)
+        if c == "cat":
+            warning = True
+            object_name = c
+        text_location = (left_margin, row_size*(i+2))
+        cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+                    font_size, text_color, font_thickness)
+        i+=1
+    
+    if warning:
+        start_point = (200, 400)
+# Ending coordinate, here (220, 220)
+# represents the bottom right corner of rectangle
+        end_point = (440, 440)
+        color = (255, 0, 0)
+        thickness = -1
+        cv2.rectangle(image, start_point, end_point, color, thickness)
+        text_location = (left_margin, row_size*(7))
+        cv2.putText(image, "Cat found", (230, 420), cv2.FONT_HERSHEY_PLAIN,
+                    font_size, (255,255,0), font_thickness)
+        pos = getGPSCoordinate()
+        data = {'lat': pos["lat"],
+        'lng':pos["lng"],
+        'object':object_name}
+        headers={"Content-Type":"application/json"}
+        r = requests.post(os.environ['ENDPOINT']
+            + f"/traffic/object/position",json=data)
+
 
     # Stop the program if the ESC key is pressed.
     if cv2.waitKey(1) == 27:
