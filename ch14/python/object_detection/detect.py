@@ -22,9 +22,9 @@ from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 import utils
+import os
 
-
-def getGPSCoordinate()
+def getGPSCoordinate():
     rhost = os.environ['REDIS_HOST']
     rauth = os.environ['REDIS_AUTH']
     r = redis.StrictRedis(host=rhost,\
