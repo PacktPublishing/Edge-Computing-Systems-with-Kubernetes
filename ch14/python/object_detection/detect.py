@@ -24,6 +24,10 @@ from tflite_support.task import vision
 import utils
 import os
 
+import requests
+
+obj_values = {"car":1,"cat":2,"person":3,"dog":4,"semaphore":5,"other":6}
+
 def getGPSCoordinate():
     rhost = os.environ['REDIS_HOST']
     rauth = os.environ['REDIS_AUTH']
@@ -94,17 +98,15 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
     # Run object detection estimation using the model.
     detection_result = detector.detect(input_tensor)
-
-    print(str(detection_result))
-    print(str(len(detection_result.detections)))
-    print(type(detection_result))
-
+#    print(str(detection_result))
+#    print(str(len(detection_result.detections)))
+#    print(type(detection_result))
 
     items.clear()
 
 
     for detected_obj in detection_result.detections:
-      print("Detected: "+str(detected_obj.classes[0].class_name))
+#      print("Detected: "+str(detected_obj.classes[0].class_name))
       items.append(str(detected_obj.classes[0].class_name))
     
 
@@ -132,21 +134,34 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     r = 2
     counts = Counter(items)
     print("counts",counts)
-    i = 0
-    warning = False
-    object_name = ""
+#    i = 0
+    warning_pred = 0
+    found = ""
+    warning = 0
     for c in counts:
 #        print(c,counts[c])
         fps_text = c + " = " + str(counts[c])
         print("fps_text",fps_text)
-        if c == "cat":
-            warning = True
-            object_name = c
-        text_location = (left_margin, row_size*(i+2))
-        cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-                    font_size, text_color, font_thickness)
-        i+=1
-    
+        
+        object_id = 6
+        if c in obj_values:
+            object_id = obj_values[c]
+        data = {"data":[object_id]}
+        headers={"Content-Type":"application/json"}
+        r = requests.post(os.environ['PREDICT_HOST']
+            + f"/predict",json=data)
+        print("warning prediction",r.json()["prediction"])
+        warning_pred = int(r.json()["prediction"])
+
+        if warning_pred <=2:
+            warning += 1
+            found += c + ","
+
+#        text_location = (left_margin, row_size*(i+2))
+#        cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+#                    font_size, text_color, font_thickness)
+#        i+=1
+	
     if warning:
         start_point = (200, 400)
 # Ending coordinate, here (220, 220)
@@ -156,15 +171,29 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         thickness = -1
         cv2.rectangle(image, start_point, end_point, color, thickness)
         text_location = (left_margin, row_size*(7))
-        cv2.putText(image, "Cat found", (230, 420), cv2.FONT_HERSHEY_PLAIN,
+        cv2.putText(image, found[:-1] + " found", (230, 420), cv2.FONT_HERSHEY_PLAIN,
                     font_size, (255,255,0), font_thickness)
-        pos = getGPSCoordinate()
-        data = {'lat': pos["lat"],
-        'lng':pos["lng"],
-        'object':object_name}
-        headers={"Content-Type":"application/json"}
-        r = requests.post(os.environ['ENDPOINT']
-            + f"/traffic/object/position",json=data)
+    else:
+        start_point = (200, 400)
+# Ending coordinate, here (220, 220)
+# represents the bottom right corner of rectangle
+        end_point = (440, 440)
+        color = (255, 0, 0)
+        thickness = -1
+        cv2.rectangle(image, start_point, end_point, color, thickness)
+        text_location = (left_margin, row_size*(7))
+        cv2.putText(image, "No warnings", (230, 420), cv2.FONT_HERSHEY_PLAIN,
+                    font_size, (255,255,0), font_thickness)
+
+
+#        warning = False
+#        pos = getGPSCoordinate()
+#        data = {'lat': pos["lat"],
+#        'lng':pos["lng"],
+#        'object':object_name}
+#        headers={"Content-Type":"application/json"}
+#        r = requests.post(os.environ['ENDPOINT']
+#            + f"/traffic/object/position",json=data)
 
 
     # Stop the program if the ESC key is pressed.
