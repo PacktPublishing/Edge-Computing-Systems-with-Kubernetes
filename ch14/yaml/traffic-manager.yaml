@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: traffic-manager
+  name: traffic-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffic-manager
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: traffic-manager
+    spec:
+      containers:
+      - image: sergioarmgpl/autoexpire
+        name: autoexpire
+        imagePullPolicy: Always
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_AUTH
+          value: "YOUR_PASSWORD"
+        - name: DELAY
+          value: "30"
+      - image: sergioarmgpl/traffic_manager
+        name: traffic-manager
+        imagePullPolicy: Always
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_AUTH
+          value: "YOUR_PASSWORD"
+        - name: TTL_TRAFFIC
+          value: "900"
+        - name: TTL_OBJECT
+          value: "180"
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: traffic-manager
+  name: traffic-manager-lb
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: traffic-manager
+  type: LoadBalancer

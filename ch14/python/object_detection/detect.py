@@ -146,6 +146,15 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         if warning_pred <=2:
             warning += 1
             found += c + ","
+            #record traffic event
+            data = {'object':c,
+            'warning':warning_pred}
+            print("Data",data,file=sys.stderr)
+            headers={"Content-Type":"application/json"}
+            r = requests.post(os.environ['GPS_QUEUE_HOST']
+                + "/traffic/event",json=data)
+            print("Response",r.json(),file=sys.stderr)
+            warning_pred = int(r.json()["prediction"])
 
 #        text_location = (left_margin, row_size*(i+2))
 #        cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,

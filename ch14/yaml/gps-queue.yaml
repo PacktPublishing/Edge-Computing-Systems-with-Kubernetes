@@ -42,11 +42,24 @@ spec:
           name: dev-volume
         - name: tmp
           mountPath: /tmp
+      - image: sergioarmgpl/gps_api
+        name: gps-api
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Always
+        env:
+        - name: ENDPOINT
+          value: "http://35.194.53.112:3000/traffic"
+        securityContext:
+          runAsUser: 1
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
       - image: curlimages/curl
         name: sync-traffic-events
         env:
         - name: URL
-          value: "http://localhost:3000"
+          value: "http://localhost:3000/traffic"
         - name: DELAY
           value: "30"
         command: [ "sh", "-c"]
@@ -55,17 +68,6 @@ spec:
             curl ${URL};
             sleep ${DELAY};
           done;
-      - image: sergioarmgpl/gps_api
-        name: gps-api
-        imagePullPolicy: Always
-        env:
-        - name: ENDPOINT
-          value: "http://<IP>:3000/traffic"
-        securityContext:
-          runAsUser: 1
-        volumeMounts:
-        - name: tmp
-          mountPath: /tmp
       volumes:
       - name: dev-volume
         hostPath:
