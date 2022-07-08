@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gps-queue
+  name: gps-queue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gps-queue
+  template:
+    metadata:
+      labels:
+        app: gps-queue
+    spec:
+      initContainers:
+      - image: busybox:1.34
+        name: init-gps-queue
+        command: ['sh', '-c', "echo '-1' >> /tmp/gps-coordinate"]
+        securityContext:
+          #privileged: true
+          runAsUser: 1
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      containers:
+      - image: sergioarmgpl/gps_queue
+        name: gps-queue
+        imagePullPolicy: Always
+        env:
+        - name: DEVICE
+          value: "/dev/ttyACM0"
+        - name: ENDPOINT
+          value: "http://<TRAFFIC_MANAGER_IP>:3000"
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["SYS_ADMIN"]
+        volumeMounts:
+        - mountPath: /dev
+          name: dev-volume
+        - name: tmp
+          mountPath: /tmp
+      - image: curlimages/curl
+        name: sync-traffic-events
+        env:
+        - name: URL
+          value: "http://localhost:3000"
+        - name: DELAY
+          value: "30"
+        command: [ "sh", "-c"]
+        args:
+        - while :; do
+            curl ${URL};
+            sleep ${DELAY};
+          done;
+      - image: sergioarmgpl/gps_api
+        name: gps-api
+        imagePullPolicy: Always
+        env:
+        - name: ENDPOINT
+          value: "http://<IP>:3000/traffic"
+        securityContext:
+          runAsUser: 1
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: dev-volume
+        hostPath:
+          path: /dev
+          type: Directory
+      - name: tmp
+        emptyDir: {}
+status: {}
