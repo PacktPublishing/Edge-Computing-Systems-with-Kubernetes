@@ -17,7 +17,7 @@ spec:
       initContainers:
       - image: busybox:1.34
         name: init-gps-queue
-        command: ['sh', '-c', "echo '-1' >> /tmp/gps-coordinate"]
+        command: ['sh', '-c', "echo '-1' >> /tmp/gps"]
         securityContext:
           #privileged: true
           runAsUser: 1
