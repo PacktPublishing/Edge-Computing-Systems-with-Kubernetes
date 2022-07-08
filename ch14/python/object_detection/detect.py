@@ -28,16 +28,6 @@ import requests
 
 obj_values = {"car":1,"cat":2,"person":3,"dog":4,"semaphore":5,"other":6}
 
-def getGPSCoordinate():
-    rhost = os.environ['REDIS_HOST']
-    rauth = os.environ['REDIS_AUTH']
-    r = redis.StrictRedis(host=rhost,\
-      port=6379,db=0,password=rauth,\
-      decode_responses=True)
-    r = r.lpop("gps-queue")
-    pos = r.split("|")
-    return {"lat":float(pos[0]),"lng":float(pos[1])}
-
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         enable_edgetpu: bool) -> None:
