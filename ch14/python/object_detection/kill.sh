@@ -1,1 +1,1 @@
-killall SCREEN
+killall kubectl
