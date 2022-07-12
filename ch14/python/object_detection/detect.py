@@ -202,6 +202,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # Stop the program if the ESC key is pressed.
     if cv2.waitKey(1) == 27:
       break
+#    cv2.namedWindow('object_detector', cv2.WINDOW_NORMAL)
+    cv2.setWindowProperty('object_detector', cv2.WND_PROP_FULLSCREEN,
+                              cv2.WINDOW_FULLSCREEN)
     cv2.imshow('object_detector', image)
 
   cap.release()
