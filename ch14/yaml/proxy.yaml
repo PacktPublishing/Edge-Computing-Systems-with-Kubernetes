@@ -22,25 +22,7 @@ spec:
         name: proxy
         imagePullPolicy: Always
         env:
-        - name: TRAFFIC_MANAGER
-          value: "<TRAFFIC_MANAGER_IP>"
+        - name: URL
+          value: "http://<TRAFFIC_MANAGER_IP>:5000"
         resources: {}
 status: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  creationTimestamp: null
-  labels:
-    app: proxy
-  name: proxy
-spec:
-  ports:
-  - port: 5000
-    protocol: TCP
-    targetPort: 5000
-  selector:
-    app: proxy
-  type: ClusterIP
-status:
-  loadBalancer: {}
