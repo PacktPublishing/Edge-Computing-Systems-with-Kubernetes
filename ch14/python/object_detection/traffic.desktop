@@ -1,0 +1,8 @@
+[Desktop Entry]
+Comment=Traffic
+Terminal=false
+Name=Traffic
+URL=http://34.136.195.73:3000
+Exec=chromium-browser
+Type=Link
+Icon=/usr/share/pixmaps/chromium-browser.png

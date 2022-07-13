@@ -26,7 +26,7 @@ import os
 
 import requests
 
-obj_values = {"car":1,"cat":2,"person":3,"dog":4,"semaphore":5,"other":6}
+obj_values = {"car":1,"cat":2,"person":3,"dog":4,"semaphore":5,"truck":6,"other":1000}
 
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
@@ -133,7 +133,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         fps_text = c + " = " + str(counts[c])
         print("fps_text",fps_text)
         
-        object_id = 6
+        object_id = 1000
         if c in obj_values:
             object_id = obj_values[c]
         data = {"data":[object_id]}
@@ -203,8 +203,15 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     if cv2.waitKey(1) == 27:
       break
 #    cv2.namedWindow('object_detector', cv2.WINDOW_NORMAL)
-    cv2.setWindowProperty('object_detector', cv2.WND_PROP_FULLSCREEN,
-                              cv2.WINDOW_FULLSCREEN)
+#    cv2.setWindowProperty('object_detector', cv2.WND_PROP_FULLSCREEN,
+#                              cv2.WINDOW_FULLSCREEN)
+#    cv2.namedWindow("object_detector",cv2.WINDOW_AUTOSIZE)
+#    cv2.namedWindow('object_detector', cv2.WINDOW_NORMAL)
+    cv2.setWindowProperty('object_detector', 1, cv2.WINDOW_NORMAL)
+    #cv2.setWindowProperty('object_detector', 1, cv2.WINDOW_AUTOSIZE)
+
+    #cv2.resizeWindow('object_detector', 1920,1080)
+    
     cv2.imshow('object_detector', image)
 
   cap.release()

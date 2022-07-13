@@ -7,3 +7,4 @@ screen -dm bash -c 'kubectl port-forward --address 0.0.0.0 deploy/gps-queue 3001
 sleep 10
 echo "loading object detection"
 PREDICT_HOST="http://localhost:3000" GPS_QUEUE_HOST="http://localhost:3001" python3 detect.py --model efficientdet_lite0.tflite --cameraId 0 #--enableEdgeTPU
+sleep 10
