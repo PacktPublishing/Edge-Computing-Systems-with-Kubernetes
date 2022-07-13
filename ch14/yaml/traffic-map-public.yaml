@@ -25,9 +25,7 @@ spec:
         - name: LATITUDE
           value: "<YOUR_LATITUDE_COORDINATE>"
         - name: LONGITUDE
-          value: "<YOUR_LONGITUDE_COORDINATE>"
-        - name: GPS_QUEUE
-          value: "<GPS_QUEUE_IP>"          
+          value: "<YOUR_LONGITUDE_COORDINATE>"        
         - name: TRAFFIC_MANAGER
           value: "<TRAFFIC_MANAGER_IP>"
         resources: {}

@@ -51,7 +51,7 @@ metadata:
   name: traffic-manager-lb
 spec:
   ports:
-  - port: 3000
+  - port: 5000
     protocol: TCP
     targetPort: 3000
   selector:
