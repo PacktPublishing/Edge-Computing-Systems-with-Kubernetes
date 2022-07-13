@@ -49,7 +49,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: ENDPOINT
-          value: "http://104.198.42.135:3000"
+          value: "http://<TRAFFIC_MANAGER_IP>:5000"
         securityContext:
           runAsUser: 1
         volumeMounts:
