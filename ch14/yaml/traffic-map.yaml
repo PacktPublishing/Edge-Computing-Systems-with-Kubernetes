@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: traffic-map
+  name: traffic-map
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffic-map
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: traffic-map
+    spec:
+      containers:
+      - image: sergioarmgpl/traffic_map
+        name: traffic-map
+        imagePullPolicy: Always
+        env:
+        - name: LATITUDE
+          value: "<YOUR_LATITUDE_COORDINATE>"
+        - name: LONGITUDE
+          value: "<YOUR_LONGITUDE_COORDINATE>"
+        - name: GPS_QUEUE
+          value: "<GPS_QUEUE_IP>"          
+        - name: TRAFFIC_MANAGER
+          value: "<TRAFFIC_MANAGER_IP>"
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: traffic-map
+  name: traffic-map-lb
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: traffic-map
+  type: LoadBalancer
+status:
+  loadBalancer: {}
