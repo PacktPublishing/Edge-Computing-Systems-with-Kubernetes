@@ -3,23 +3,23 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: traffic-map
-  name: traffic-map
+    app: traffic-map-public
+  name: traffic-map-public
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: traffic-map
+      app: traffic-map-public
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: traffic-map
+        app: traffic-map-public
     spec:
       containers:
       - image: sergioarmgpl/traffic_map
-        name: traffic-map
+        name: traffic-map-public
         imagePullPolicy: Always
         env:
         - name: LATITUDE
@@ -32,3 +32,21 @@ spec:
           value: "<TRAFFIC_MANAGER_IP>"
         resources: {}
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: traffic-map-public
+  name: traffic-map-public-lb
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: traffic-map-public
+  type: LoadBalancer
+status:
+  loadBalancer: {}
