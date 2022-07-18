@@ -1,0 +1,1 @@
+cp *.desktop /home/$USER/Desktop

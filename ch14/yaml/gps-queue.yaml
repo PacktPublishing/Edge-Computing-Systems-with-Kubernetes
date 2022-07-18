@@ -31,8 +31,6 @@ spec:
         env:
         - name: DEVICE
           value: "/dev/ttyACM0"
-        - name: ENDPOINT
-          value: "http://<TRAFFIC_MANAGER_IP>:3000"
         securityContext:
           privileged: true
           capabilities:
