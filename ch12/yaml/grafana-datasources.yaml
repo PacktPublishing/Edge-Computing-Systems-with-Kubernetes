@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+  labels:
+    grafana_datasource: "true"
+data:
+  datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+      - name: sensor_data
+        type: mysql
+        url: mysql.default.svc
+        access: proxy
+        database: sensor_data
+        user: lora_mysql
+        secureJsonData:
+          password: lora123-
+        isDefault: true

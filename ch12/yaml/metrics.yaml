@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: metrics
+  name: metrics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metrics
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: metrics
+    spec:
+      containers:
+      - image: sergioarmgpl/metric
+        name: metric
+        env:
+        - name: HOST
+          value: "192.168.0.240"
+        - name: MYSQL_USER
+          value: "lora_mysql"
+        - name: MYSQL_PASSWORD
+          value: "lora123-"
+        - name: MYSQL_DATABASE
+          value: "sensor_data"
+        resources: {}
+status: {}

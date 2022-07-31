@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:8.0.28-oracle
+        name: mysql
+        env:
+        - name: MYSQL_DATABASE
+          value: sensor_data
+        - name: MYSQL_USER
+          value: lora_mysql
+        - name: MYSQL_PASSWORD
+          value: lora123-
+        - name: MYSQL_ROOT_PASSWORD
+          value: lora123-
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: db-pv-claim
