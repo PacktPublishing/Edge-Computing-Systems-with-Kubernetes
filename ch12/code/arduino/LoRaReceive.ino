@@ -43,13 +43,11 @@ void callURL(String data)
 
   WiFiClient client;
   HTTPClient http;
-  http.begin(client, 
-"http://"+((String)METRICS_IP)+":3000/device");
+  http.begin(client, "http://"+((String)METRICS_IP)+":3000/device");
   http.addHeader("Content-Type","application/json");
        
   int httpResponseCode = http.POST(postData);
-  Serial.println("HTTP Response code xyz: 
-"+(String)httpResponseCode);
+  Serial.println("HTTP Response code xyz: "+(String)httpResponseCode);
   http.end();
 }
 
