@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app1
+  name: app1
+  namespace: myapps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+      - image: czdev/app1demo
+        name: app1demo
+        env:
+        - name: MESSAGE
+          value: "Meshed application app1 with Linkerd"
+        - name: PORT
+          value: "5000"

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: error-injector
+  namespace: myapps
+data:
+nginx.conf: |-
+    events {}
+    http {
+        server {
+          listen 5000;
+            location / {
+                return 500;
+            }
+        }
+    }

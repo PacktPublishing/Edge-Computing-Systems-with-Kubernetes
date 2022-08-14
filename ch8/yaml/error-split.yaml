@@ -1,0 +1,12 @@
+apiVersion: split.smi-spec.io/v1alpha1 
+kind: TrafficSplit 
+metadata: 
+  name: error-split 
+  namespace: myapps 
+spec: 
+  service: app1 
+  backends: 
+  - service: app1 
+    weight: 500m 
+  - service: error-injector 
+    weight: 500m 
