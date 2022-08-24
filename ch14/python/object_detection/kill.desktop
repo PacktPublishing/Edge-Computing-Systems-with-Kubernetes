@@ -1,8 +1,0 @@
-[Desktop Entry]
-Comment=Kill
-Terminal=true
-Name=Kill
-Exec=/bin/bash /home/sergioarmgpl/Edge-computing-with-K3os-and-k3s/ch14/python/object_detection/kill.sh
-Type=Application
-Icon=/usr/share/pixmaps/chromium-browser.png
-Path=/home/sergioarmgpl/Edge-computing-with-K3os-and-k3s/ch14/python/object_detection

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Comment=Detector
-Terminal=true
-Name=Detector
-Exec=/bin/bash /home/sergioarmgpl/Edge-computing-with-K3os-and-k3s/ch14/python/object_detection/run.sh
-Type=Application
-Icon=/usr/share/pixmaps/chromium-browser.png
-Path=/home/sergioarmgpl/Edge-computing-with-K3os-and-k3s/ch14/python/object_detection
