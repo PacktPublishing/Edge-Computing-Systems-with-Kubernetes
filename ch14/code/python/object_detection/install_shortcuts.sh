@@ -1,6 +1,6 @@
 cp traffic.desktop /home/$USER/Desktop
 #cp *.desktop /home/$USER/Desktop
-cat <<EOF > /home/$USER/Desktop
+cat <<EOF > /home/$USER/Desktop/detector.desktop
 [Desktop Entry]
 Comment=Detector
 Terminal=true
