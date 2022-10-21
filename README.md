@@ -52,3 +52,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 ## Get to Know the Author
 **Sergio Méndez**
 is a systems engineer and professor of operating systems at San Carlos of Guatemala university. His work at the university is related to teaching and researching cloud native technologies with his students. He has experience working on DevOps, and MLOps using open source technologies at work. About open source communities, he is involved in the CNCF Communities, promoting students into the CNCF Ecosystem and hosting a Cloud Native meetup in Guatemala. He has been a speaker at several conferences such as KubeCon, WTFisCloudNative, and Kubernetes Community Days. He is also a Linkerd Ambassador.
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781800568594">https://packt.link/free-ebook/9781800568594 </a> </p>
