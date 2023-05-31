@@ -8,7 +8,7 @@ This is the code repository for [Edge Computing Systems with Kubernetes](https:/
 
 **A use guide for building edge systems using K3s, k3OS, and open source cloud native technologies**
 
-[Errata](errata/README.md) in the this repository too. **(In progress)**
+[Errata](errata/README.md) in this repository. **(In progress)**
 
 ## What is this book about?
 Edge computing is a way of processing information near the source of data instead of processing it on data centers in the cloud. In this way, edge computing can reduce latency when data is processed, improving the user experience on real-time data visualization for your applications. Using K3s, a light-weight Kubernetes and k3OS, a K3s-based Linux distribution along with other open source cloud native technologies, you can build reliable edge computing systems without spending a lot of money.
