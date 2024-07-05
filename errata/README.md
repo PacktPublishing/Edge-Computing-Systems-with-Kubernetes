@@ -1,5 +1,5 @@
 # Errata
-This errata contains Fixed on commands or reference to use the Book
+This errata contains Fixed on commands or reference to use the Book  
 [Chapter 1](ch1.md)  
 [Chapter 2, Updated, Jun 5, 2024](ch2.md) Fix on K3s installation  
 [Chapter 3, Updated, Jun 5, 2024](ch3.md) Fix on K3s installation  
